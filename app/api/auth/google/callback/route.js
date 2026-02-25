@@ -1,0 +1,78 @@
+export const runtime = "nodejs";
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { DBConnect } from "@/lib/db";
+import User from "@/models/User";
+
+export async function GET(req) {
+  try {
+    const url = new URL(req.url);
+    const code = url.searchParams.get("code");
+ 
+    if (!code) {
+      return NextResponse.redirect(new URL("/login?error=no_code", req.url)); 
+    }
+
+    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+        grant_type: "authorization_code",
+      }),
+    });
+
+    const tokens = await tokenRes.json();
+
+    const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { Authorization: `Bearer ${tokens.access_token}` },
+    });
+    const profile = await userInfoRes.json();
+
+    await DBConnect();
+
+    let user = await User.findOne({ email: profile.email.toLowerCase() });
+
+    if (user) {
+      user.provider = "google";
+      user.providerId = profile.id;
+      user.image = profile.picture;
+      user.emailVerified = true;
+      await user.save();
+    } else {
+      user = await User.create({
+        name: profile.name,
+        email: profile.email.toLowerCase(),
+        provider: "google",
+        providerId: profile.id,
+        image: profile.picture,
+        emailVerified: true,
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const response = NextResponse.redirect(new URL("/dashboard", req.url));
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    });
+
+    // ✅ Return the response here
+    return response;
+
+  } catch (error) {
+    console.error("Google callback error:", error);
+    return NextResponse.redirect(new URL("/login?error=google_failed", req.url));
+  }
+}
