@@ -4,6 +4,8 @@ import { LayoutDashboard, CreditCard, TrendingUp, Target, Settings, LogOut } fro
 import { Button } from "@/components/ui_kits/Button";
 import Link from "next/link";
 import { useActivePath } from "@/hooks/useActivePath";
+import { useAuth } from "@/hooks/useAuth"
+import { Modal } from "@/components/ui_kits/Modal";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/transactions", label: "Transactions", icon: CreditCard },
@@ -14,8 +16,23 @@ const navItems = [
 ];
 
 export function Sidebar() {
+  const { logout, loading } = useAuth()
   const {activePath, updatePath} = useActivePath("/dashboard")
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+   const handleLogoutClick = (e) => {
+    e.preventDefault();
+    setShowLogoutModal(true);
+  };
+
+  const handleConfirmLogout = async () => {
+    await logout();
+    setShowLogoutModal(false);
+  };
+
+
   return (
+    <>
     <aside className="hidden md:flex w-64 border-r border-border bg-card flex-col">
       <Link
         href="/dashboard"
@@ -50,11 +67,46 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t border-border p-4">
-        <Button variant="outline" className="w-full justify-start gap-3 bg-transparent">
+        <Button onClick={handleLogoutClick} disabled={loading} variant="outline" className="w-full justify-start gap-3 bg-transparent">
           <LogOut className="h-5 w-5" />
           Logout
         </Button>
       </div>
     </aside>
+
+    <Modal
+        open={showLogoutModal}
+        onOpenChange={setShowLogoutModal}
+        title="Confirm Logout"
+        description="Are you sure you want to logout? You will need to sign in again to access your account."
+      >
+        <div className="flex gap-3 justify-end pt-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowLogoutModal(false)}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmLogout}
+            disabled={loading}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Logging out...
+              </>
+            ) : (
+              <>
+                <LogOut className="h-4 w-4 mr-2" />
+                Yes, Logout
+              </>
+            )}
+          </Button>
+        </div>
+      </Modal>
+    </>
   );
 }

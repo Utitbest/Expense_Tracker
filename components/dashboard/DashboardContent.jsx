@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useAuthStore } from "@/hooks/useAuthStore"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { Button } from "@/components/ui_kits/Button";
 import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
@@ -43,14 +43,13 @@ const recentTransactions = [
   { id: 5, name: "Groceries", category: "Food", amount: -85.3, date: "4 days ago", icon: "🛒" },
 ];
 
+
+// It's time to create the APIs for the dashoard
 export function DashboardContent() {
   const totalBalance = 12450.75;
   const monthlyIncome = 8050;
   const monthlyExpenses = 2240.79;
-  const { setUser, setLoading, setError, loading, user } = useAuthStore.getState();
-  const [userInfo, setUserInfo] = useState([])
-  
-  console.log(user)
+
 
   return (
     <div className="p-6 space-y-6">

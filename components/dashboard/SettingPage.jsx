@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui_kits/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { Input } from "@/components/ui_kits/Input";
@@ -9,11 +9,21 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { BankLinkingSection } from "@/components/dashboard/BankSection";
 import { User, Lock, Download, LogOut, ChevronRight } from "lucide-react";
+import { useAuthStore } from "@/hooks/useAuthStore"
+import Image from "next/image";
 
 export function SettingsPage() {
   const [username, setUsername] = useState("john.doe");
   const [email, setEmail] = useState("john@example.com");
   const [currency, setCurrency] = useState("usd");
+  const { user, isLoading } = useAuthStore()
+  const hasValidImage = user?.provider === "google" && user?.image;
+
+  useEffect(()=>{
+    setEmail(user.email)
+    setUsername(user.name)
+  }, [])
+
 
   return (
     <div className="p-6 space-y-6 max-w-4xl">
@@ -55,10 +65,22 @@ export function SettingsPage() {
           <div>
             <Label>Profile Picture</Label>
             <div className="mt-2 flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center text-3xl">
-                👤
-              </div>
-              <Button variant="outline" className="bg-transparent">
+                {hasValidImage ? (
+                  // ✅ Google user with valid image
+                  <Image
+                    src={user.image}
+                    alt={user.name}
+                    width={100}
+                    height={100}
+                    className="rounded-full w-20 h-20 border-2 border-primary"
+                  />
+                ) : (
+                  // ✅ Placeholder for non-Google or no image
+                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center text-3xl">
+                    👤
+                  </div>
+                )}
+              <Button disabled={user.provider === "google"} variant="outline" className="bg-transparent">
                 Change Picture
               </Button>
             </div>

@@ -3,16 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useAuthStore } from "@/hooks/useAuthStore"
 import { Tomorrow } from "next/font/google";
-
+import { useAuthStore } from "@/hooks/useAuthStore";
 
 export const useAuth = () => {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const { setUser, clearUser } = useAuthStore();
   // Signup function
   const signup = async (formData) => {
     setLoading(true);
@@ -32,6 +31,10 @@ export const useAuth = () => {
 
       if (!response.ok) {
         throw new Error(data.message || "Signup failed");
+      }
+
+      if (data.user) {
+        setUser(data.user);
       }
 
       toast.success("Account created successfully! 🎉", {
@@ -69,7 +72,12 @@ export const useAuth = () => {
       if (!response.ok) {
         throw new Error(data.message || "Login failed");
       }
-       toast.success("Welcome back! 👋", {
+
+      if (data.user) {
+        setUser(data.user);
+      }
+
+      toast.success("Welcome back! 👋", {
         id: loadingToast,
       });
       return { success: true, data };
@@ -99,6 +107,8 @@ export const useAuth = () => {
       if (!response.ok) {
         throw new Error(data.message || "Logout failed");
       }
+
+      clearUser();
       toast.success("Logged out successfully!", {
         id: loadingToast,
       });
@@ -115,40 +125,10 @@ export const useAuth = () => {
     }
   };
 
-  // Get current user
-  const getCurrentUser = async () => {
-  const { setUser, setLoading, setError } = useAuthStore();
-    setLoading(true);
-    setError(null);
-    const loadingToast = toast.loading("");
-    try {
-      const response = await fetch("/api/auth/me");
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to get user");
-      }
-
-      setUser(data)
-      console.log(data)
-
-      return { success: true, data };
-    } catch (err) {
-      setError(err.message);
-      toast.error(err.message, {
-        id: loadingToast,
-      });
-      return { success: false, error: err.message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return {
     signup,
     login,
     logout,
-    getCurrentUser,
     loading,
     error,
     setError,

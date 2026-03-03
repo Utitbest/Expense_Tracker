@@ -11,19 +11,28 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import Link from "next/link";
 import { toast } from "sonner";
-
+import { useAuth } from "@/hooks/useAuth";
 
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const errorMessages = {
+    google_failed: "Google sign-in failed. Please try again.",
+    no_code: "Authentication failed - no code received.",
+    token_failed: "Failed to get access token from Google.",
+    no_email: "Could not retrieve email from Google.",
+  };
+  const [newError, setNewError] = useState(null)
+  const { login, loading, error } = useAuth();
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+  })
   const searchParams = useSearchParams(); 
   const router = useRouter();
-  const [error, setError] = useState(null);
 
   useEffect(() => { 
     const paramError = searchParams.get("error"); 
-    if (paramError && paramError !== error) { 
-      setError(paramError); 
+    if (paramError) { 
+      setNewError(paramError); 
       switch (paramError) { 
         case "no_code": 
          toast.error("Google sign‑in was cancelled or no code returned."); 
@@ -38,8 +47,34 @@ export function LoginForm() {
     } 
     }, [router, error]);
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    setNewError(null)
+    if(!input.email || !input.password){
+      toast.warning("Please fill the form!")
+      return
+    }
+
+    const LoginDetails = await login({
+      email: input.email,
+      password: input.password
+    })
+
+    if(LoginDetails.success){
+      router.push("/dashboard");
+    }
+  };
+
+  const handleGoogleLogin = async (e) => {
+    e.preventDefault()
+    try{ 
+      toast.loading("Redirecting to Google...");
+      window.location.href = "/api/auth/google";
+    } catch (error) { console.error("Google login error:", error); 
+      toast.error("Something went wrong with Google login"); 
+    }finally { 
+      toast.dismiss(); 
+    }
   };
 
   return (
@@ -68,11 +103,9 @@ export function LoginForm() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                {error && (
+                {newError && (
                   <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-md text-sm">
-                    {error === "google_failed"
-                      ? "Google sign‑in failed. Please try again."
-                      : "Something went wrong."}
+                    {errorMessages[newError] || "Something went wrong. Please try again."}
                   </div>
                 )}
                 <div className="space-y-2">
@@ -84,9 +117,9 @@ export function LoginForm() {
                       type="email"
                       placeholder="Enter email address"
                       className="pl-10"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
+                      value={input.email}
+                      onChange={(e) => setInput({...input, email: e.target.value})}
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -100,9 +133,9 @@ export function LoginForm() {
                       type="password"
                       placeholder="Enter password"
                       className="pl-10"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
+                      value={input.password}
+                      onChange={(e) => setInput({...input, password: e.target.value})}
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -120,8 +153,9 @@ export function LoginForm() {
                   </Link>
                 </div>
 
-                <Button type="submit" className="w-full">
-                  Sign In <ArrowRight className="ml-2 h-4 w-4" />
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Signing in..." : "Sign In"} 
+                  {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>
               </form>
 
@@ -136,7 +170,7 @@ export function LoginForm() {
                 </div>
               </div>
 
-              <Button variant="outline" className="w-full bg-transparent">
+              <Button onClick={handleGoogleLogin} variant="outline" className="w-full bg-transparent" disabled={loading}>
                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="currentColor"

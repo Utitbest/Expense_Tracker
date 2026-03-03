@@ -35,7 +35,7 @@ export async function GET(req) {
     await DBConnect();
 
     let user = await User.findOne({ email: profile.email.toLowerCase() });
-
+    let isNewUser = false;
     if (user) {
       user.provider = "google";
       user.providerId = profile.id;
@@ -51,6 +51,7 @@ export async function GET(req) {
         image: profile.picture,
         emailVerified: true,
       });
+      isNewUser = true;
     }
 
     const token = jwt.sign(
@@ -58,17 +59,22 @@ export async function GET(req) {
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
-
-    const response = NextResponse.redirect(new URL("/dashboard", req.url));
+    const redirectUrl = isNewUser 
+      ? "/dashboard?welcome=true" 
+      : "/dashboard";
+    
+    const response = NextResponse.redirect(new URL(redirectUrl, req.url));
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
 
+    console.log("✅ Google signup/login successful, redirecting to:", redirectUrl);
     // ✅ Return the response here
+    await new Promise(resolve => setTimeout(resolve, 100));
     return response;
 
   } catch (error) {

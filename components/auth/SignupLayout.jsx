@@ -10,7 +10,6 @@ import { Label } from "@/components/ui_kits/Label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
-import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 export function SignupForm() {
   const router = useRouter();

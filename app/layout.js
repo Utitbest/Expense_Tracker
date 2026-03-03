@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/ThemeProvider"
+
+
 import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 export const metadata = {
@@ -38,10 +40,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} font-sans antialiased`}>
-        <Providers>
-          {children}
-          <Toaster position="bottom-right" richColors />
-        </Providers>
+          <Providers>
+            {children}
+            <Toaster position="bottom-right" richColors />
+          </Providers>
       </body>
     </html>
   )
