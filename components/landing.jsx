@@ -6,7 +6,7 @@ import { ArrowRight, TrendingUp, Wallet, PieChart, Zap } from "lucide-react"
 import { Button } from "@/components/ui_kits/Button"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { LanguageSelector } from "@/components/LanguageSelector"
-
+import Image from "next/image"
 export function Landing() {
 
   return (
@@ -61,8 +61,15 @@ export function Landing() {
           </div>
 
           <div className="relative h-96 sm:h-full min-h-96 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <div className="w-48 h-64 rounded-xl bg-gradient-to-br from-primary to-accent opacity-30 absolute"></div>
-            <div className="w-32 h-40 rounded-lg bg-primary/40 absolute transform -rotate-12"></div>
+            {/* <div className="w-48 h-64 rounded-xl bg-gradient-to-br from-primary to-accent opacity-30 absolute"></div>
+            <div className="w-32 h-40 rounded-lg bg-primary/40 absolute transform -rotate-12"></div> */}
+            <img
+             src="/supriseMan.png" 
+             alt="superman with wins"
+             width={100}
+             height={100}
+             className="object-cover object-top w-full h-full"
+            />
           </div>
         </div>
       </section>
