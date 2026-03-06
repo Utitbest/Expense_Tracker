@@ -12,7 +12,6 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { setUser, clearUser } = useAuthStore();
-  // Signup function
   const signup = async (formData) => {
     setLoading(true);
     setError(null);
@@ -52,7 +51,6 @@ export const useAuth = () => {
     }
   };
 
-  // Login function
   const login = async (formData) => {
     setLoading(true);
     setError(null);
@@ -92,7 +90,6 @@ export const useAuth = () => {
     }
   };
 
-  // Logout function
   const logout = async () => {
     setLoading(true);
     setError(null);
