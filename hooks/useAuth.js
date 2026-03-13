@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Tomorrow } from "next/font/google";
 import { useAuthStore } from "@/hooks/useAuthStore";
 
 export const useAuth = () => {
@@ -12,6 +11,8 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { setUser, clearUser } = useAuthStore();
+
+
   const signup = async (formData) => {
     setLoading(true);
     setError(null);

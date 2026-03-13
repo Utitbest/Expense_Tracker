@@ -44,7 +44,7 @@ export function SignupForm() {
     e.preventDefault();
     setError(null);
 
-    if (input.password !== input.confirmPassword) {
+    if (input.password !== input.confirmPassword){
       setError("Passwords do not match");
       return;
     }

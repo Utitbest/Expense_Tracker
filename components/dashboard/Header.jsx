@@ -5,9 +5,10 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Menu, Plus } from "lucide-react";
 import { MobileNav } from "@/components/dashboard/MobileNav";
-
+import { AddExpenseModal } from "@/components/dashboard/AddExpenseModal";
 export function Header() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <>
@@ -23,7 +24,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button className="gap-2" size="sm">
+          <Button onClick={() => setOpen(true)} className="gap-2" size="sm">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Add Expense</span>
           </Button>
@@ -32,6 +33,7 @@ export function Header() {
         </div>
       </header>
       <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
+      <AddExpenseModal open={open} onOpenChange={setOpen} />
     </>
   );
 }

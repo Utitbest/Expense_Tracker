@@ -35,7 +35,7 @@ export async function POST(request) {
       { status: 403 }
     );
   }
-    if (!user.password) {
+    if (!user.password){
       return NextResponse.json(
         { 
           success: false, 

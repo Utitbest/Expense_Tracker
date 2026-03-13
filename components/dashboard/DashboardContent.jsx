@@ -18,6 +18,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui_kits/Button";
 import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
 
+
+
+const categoryData = [
+  { name: "Food", value: 35, color: "#2563eb" },
+  { name: "Transport", value: 25, color: "#10b981" },
+  { name: "Entertainment", value: 20, color: "#f59e0b" },
+  { name: "Utilities", value: 15, color: "#ef4444" },
+  { name: "Other", value: 5, color: "#8b5cf6" },
+];
+
+
+
 const monthlyData = [
   { month: "Jan", income: 4000, expenses: 2400 },
   { month: "Feb", income: 3000, expenses: 1398 },
@@ -27,13 +39,6 @@ const monthlyData = [
   { month: "Jun", income: 2390, expenses: 3800 },
 ];
 
-const categoryData = [
-  { name: "Food", value: 35, color: "#2563eb" },
-  { name: "Transport", value: 25, color: "#10b981" },
-  { name: "Entertainment", value: 20, color: "#f59e0b" },
-  { name: "Utilities", value: 15, color: "#ef4444" },
-  { name: "Other", value: 5, color: "#8b5cf6" },
-];
 
 const recentTransactions = [
   { id: 1, name: "Coffee Shop", category: "Food", amount: -5.5, date: "Today", icon: "☕" },
