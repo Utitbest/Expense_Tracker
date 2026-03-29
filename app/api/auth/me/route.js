@@ -20,7 +20,6 @@ export async function GET(req) {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Token valid for user:", decoded.userId);
     } catch (error) {
       console.log("Invalid token:", error.message);
       return NextResponse.json(
@@ -50,7 +49,6 @@ export async function GET(req) {
       );
     }
 
-    console.log("User found:", user.email);
 
     return NextResponse.json({ 
       success: true, 

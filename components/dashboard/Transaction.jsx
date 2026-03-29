@@ -1,31 +1,33 @@
-"use client"
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui_kits/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { Input } from "@/components/ui_kits/Input";
 import { Label } from "@/components/ui_kits/Label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui_kits/Select";
 import { Search, Download, Plus, ArrowUpRight, ArrowDownLeft } from "lucide-react";
-
-const allTransactions = [
-  { id: 1, name: "Starbucks Coffee", category: "Food", amount: -5.5, date: "Dec 15, 2024", status: "completed", icon: "☕" },
-  { id: 2, name: "Monthly Salary", category: "Income", amount: 3500, date: "Dec 14, 2024", status: "completed", icon: "💰" },
-  { id: 3, name: "Uber Ride", category: "Transport", amount: -12.3, date: "Dec 13, 2024", status: "completed", icon: "🚗" },
-  { id: 4, name: "Netflix Subscription", category: "Entertainment", amount: -12.99, date: "Dec 12, 2024", status: "completed", icon: "🎬" },
-  { id: 5, name: "Whole Foods", category: "Food", amount: -125.45, date: "Dec 12, 2024", status: "completed", icon: "🛒" },
-  { id: 6, name: "Electric Bill", category: "Utilities", amount: -85.0, date: "Dec 10, 2024", status: "completed", icon: "⚡" },
-  { id: 7, name: "Gas Station", category: "Transport", amount: -55.25, date: "Dec 9, 2024", status: "completed", icon: "⛽" },
-  { id: 8, name: "Restaurant Dinner", category: "Food", amount: -78.5, date: "Dec 8, 2024", status: "completed", icon: "🍽️" },
-];
+import { AddTransactionModal } from "@/components/dashboard/Addtransactionmodal";
+import { useTransaction } from "@/hooks/useTransaction";
+import { formatTransactions } from "@/lib/utils";
 
 export function TransactionsPage() {
+  const { getTransactions, transactions, loading, error } = useTransaction();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const categories = ["all", "Food", "Transport", "Entertainment", "Utilities", "Income"];
+  const categories = ["all", "Food", "Transport", "Entertainment", "Utilities", "Healthcare", "Education", "Shopping", "Income", "Other"];
 
-  const filteredTransactions = allTransactions.filter((t) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      await getTransactions();
+    };
+    fetchData();
+  }, []);
+
+  const formattedTransactions = formatTransactions(transactions);
+
+  const filteredTransactions = formattedTransactions.filter((t) => {
     const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === "all" || t.category === filterCategory;
     return matchesSearch && matchesCategory;
@@ -44,7 +46,7 @@ export function TransactionsPage() {
             <Download className="h-4 w-4" />
             <span className="hidden sm:inline">Export</span>
           </Button>
-          <Button onClick={() => setShowAddModal(true)} className="gap-2">
+          <Button onClick={() => setOpen(true)} className="gap-2">
             <Plus className="h-4 w-4" />
             <span className="hidden sm:inline">Add Transaction</span>
           </Button>
@@ -93,7 +95,18 @@ export function TransactionsPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {filteredTransactions.length > 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-8 h-8 border-4 border-muted rounded-full border-t-primary animate-spin" />
+              </div>
+
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-2">
+                <p className="text-destructive text-sm font-medium">Failed to load transactions</p>
+                <p className="text-muted-foreground text-xs">{error}</p>
+              </div>
+
+            ) : filteredTransactions.length > 0 ? (
               filteredTransactions.map((transaction) => (
                 <div
                   key={transaction.id}
@@ -131,9 +144,17 @@ export function TransactionsPage() {
                 <p className="text-muted-foreground">No transactions found</p>
               </div>
             )}
+
           </div>
         </CardContent>
       </Card>
+
+      <AddTransactionModal
+        open={open}
+        onOpenChange={setOpen}
+        onSuccess={() => getTransactions()}
+      />
+
     </div>
   );
 }

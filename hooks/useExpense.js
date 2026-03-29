@@ -27,7 +27,6 @@ export function ExpenseFetch(){
 
         } catch (err) {
             setError(err.message)
-            console.log(err.message)
             toast.error(err.message)
             return { success: false, error: err.message };
         }finally{

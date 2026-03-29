@@ -13,11 +13,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useMonthlyRecord } from "@/hooks/useMonthlyRecord"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { Button } from "@/components/ui_kits/Button";
-import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
-
+import { Spinner } from "../ui_kits/Spinner";
+import { useTransaction } from "@/hooks/useTransaction";
+import { formatTransactions } from "@/lib/utils";
+import { Plus, ArrowUpRight, ArrowDownLeft, ArrowDownRight } from "lucide-react";
 
 
 const categoryData = [
@@ -30,16 +33,6 @@ const categoryData = [
 
 
 
-const monthlyData = [
-  { month: "Jan", income: 4000, expenses: 2400 },
-  { month: "Feb", income: 3000, expenses: 1398 },
-  { month: "Mar", income: 2000, expenses: 9800 },
-  { month: "Apr", income: 2780, expenses: 3908 },
-  { month: "May", income: 1890, expenses: 4800 },
-  { month: "Jun", income: 2390, expenses: 3800 },
-];
-
-
 const recentTransactions = [
   { id: 1, name: "Coffee Shop", category: "Food", amount: -5.5, date: "Today", icon: "☕" },
   { id: 2, name: "Salary Deposit", category: "Income", amount: 3500, date: "Yesterday", icon: "💰" },
@@ -48,12 +41,40 @@ const recentTransactions = [
   { id: 5, name: "Groceries", category: "Food", amount: -85.3, date: "4 days ago", icon: "🛒" },
 ];
 
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// It's time to create the APIs for the dashoard
+const formatChartData = (records) => {
+  return records.map((record) => ({
+    month: monthNames[record.month - 1],
+    income: record.income,
+    expenses: record.expenses,
+  }));
+};
+
 export function DashboardContent() {
-  const totalBalance = 12450.75;
-  const monthlyIncome = 8050;
-  const monthlyExpenses = 2240.79;
+
+  const [chartData, setChartData] = useState([]);
+  const { getSummary, getHistory, summary, error: summaryError, loading: summaryLoading } = useMonthlyRecord();
+
+  const { getTransactions, transactions, error: transactionError, loading: transactionLoading } = useTransaction();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const now = new Date();
+      const [summaryResult, historyResult, transactionResult] = await Promise.all([
+        await getSummary({ year: now.getFullYear(), month: now.getMonth() + 1 }),
+        await getHistory(),
+        await getTransactions()
+      ]);
+      if (historyResult.success) {
+        const formatted = formatChartData(historyResult.data.records);
+        setChartData(formatted);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const formattedTransactions = formatTransactions(transactions);
 
 
   return (
@@ -64,11 +85,35 @@ export function DashboardContent() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Current Balance</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="text-3xl font-bold">${totalBalance.toLocaleString()}</div>
-            <div className="flex items-center gap-2 text-sm text-accent">
-              <ArrowUpRight className="h-4 w-4" />
-              <span>+2.5% from last month</span>
-            </div>
+
+            {
+              summaryLoading ? 
+                (<Spinner className="size-6"/>) :
+              summaryError ? 
+                (
+                  <div className="flex flex-col items-center justify-center flex-1 gap-2">
+                    <p className="text-destructive text-sm font-medium">Failed to load balance</p>
+                    <p className="text-muted-foreground text-xs">{summaryError}</p>
+                  </div>
+                ) :
+                (
+                  <>
+                    <div className="text-3xl font-bold">
+                      ${summary?.currentBalance.toLocaleString()}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-accent">
+                          {summary?.balanceChange.direction == "up" ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4 stroke-[#ee3533]"/>}
+                        <span className={summary?.balanceChange.direction == "up" ? "" : "text-destructive"}>
+                          {summary?.balanceChange.label}
+                        </span>
+                    </div>
+                  </>
+                )
+              
+            }
+
+
+            
           </CardContent>
         </Card>
 
@@ -77,11 +122,29 @@ export function DashboardContent() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Income</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="text-3xl font-bold text-accent">${monthlyIncome.toLocaleString()}</div>
-            <div className="flex items-center gap-2 text-sm text-accent">
-              <ArrowUpRight className="h-4 w-4" />
-              <span>This month</span>
-            </div>
+            {
+              summaryLoading ?
+                (<Spinner className="size-6"/>) : 
+              summaryError ? 
+                (
+                  <div className="flex flex-col items-center justify-center flex-1 gap-2">
+                    <p className="text-destructive text-sm font-medium">Failed to load total income</p>
+                    <p className="text-muted-foreground text-xs">{summaryError}</p>
+                  </div>
+                ) : 
+                (
+                  <>
+                    <div className="text-3xl font-bold text-accent">${summary?.totalIncome.toLocaleString()}</div>
+                    <div className="flex items-center gap-2 text-sm text-accent">
+                      <ArrowUpRight className="h-4 w-4" />
+                      <span>This month</span>
+                    </div>
+                  </>
+                )
+            }
+
+
+           
           </CardContent>
         </Card>
 
@@ -90,11 +153,28 @@ export function DashboardContent() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Total Expenses</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="text-3xl font-bold text-destructive">${monthlyExpenses.toLocaleString()}</div>
-            <div className="flex items-center gap-2 text-sm text-destructive">
-              <ArrowDownRight className="h-4 w-4" />
-              <span>This month</span>
-            </div>
+            {
+              summaryLoading ?
+                (<Spinner className="size-6"/>) : 
+              summaryError ?
+                (
+                  <div className="flex flex-col items-center justify-center flex-1 gap-2">
+                    <p className="text-destructive text-sm font-medium">Failed to load Expense</p>
+                    <p className="text-muted-foreground text-xs">{summaryError}</p>
+                  </div>
+                ) :  
+                (
+                  <>
+                    <div className="text-3xl font-bold text-destructive">
+                      ${ summary?.totalExpenses.toLocaleString()}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-destructive">
+                      <ArrowDownRight className="h-4 w-4" />
+                      <span>This month</span>
+                    </div>
+                  </>
+                )
+            }
           </CardContent>
         </Card>
       </div>
@@ -106,17 +186,36 @@ export function DashboardContent() {
             <CardDescription>Income vs Expenses over time</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="month" stroke="var(--color-muted-foreground)" />
-                <YAxis stroke="var(--color-muted-foreground)" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="income" fill="var(--color-chart-2)" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="expenses" fill="var(--color-chart-4)" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            {summaryLoading ? (
+                // Loading state
+                <div className="flex items-center justify-center h-[300px]">
+                  <div className="w-8 h-8 border-4 border-muted rounded-full border-t-primary animate-spin" />
+                </div>
+              ) : summaryError ? (
+                // Error state
+                <div className="flex flex-col items-center justify-center h-[300px] gap-2">
+                  <p className="text-destructive text-sm font-medium">Failed to load chart data</p>
+                  <p className="text-muted-foreground text-xs">{error}</p>
+                </div>
+              ) : chartData.length === 0 ? (
+                // Empty state
+                <div className="flex items-center justify-center h-[300px]">
+                  <p className="text-muted-foreground text-sm">No records found</p>
+                </div>
+              ) : (
+                // Success state
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                    <XAxis dataKey="month" stroke="var(--color-muted-foreground)" />
+                    <YAxis stroke="var(--color-muted-foreground)" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="income" fill="var(--color-chart-2)" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="expenses" fill="var(--color-chart-4)" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
           </CardContent>
         </Card>
 
@@ -154,35 +253,63 @@ export function DashboardContent() {
             <CardTitle>Recent Transactions</CardTitle>
             <CardDescription>Your latest spending and income</CardDescription>
           </div>
-          <Button size="sm" className="gap-2">
+          <Button size="sm" className="gap-2 hidden">
             <Plus className="h-4 w-4" />
             New Transaction
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {recentTransactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between py-3 border-b border-border last:border-0"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-lg">
-                    {transaction.icon}
+         <div className="space-y-3">
+            {transactionLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-8 h-8 border-4 border-muted rounded-full border-t-primary animate-spin" />
+              </div>
+        
+            ) : transactionError ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-2">
+                <p className="text-destructive text-sm font-medium">Failed to load transactions</p>
+                <p className="text-muted-foreground text-xs">{transactionError}</p>
+              </div>
+        
+            ) : formattedTransactions.length > 0 ? (
+              formattedTransactions.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-lg">
+                      {transaction.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{transaction.name}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.date}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">{transaction.name}</p>
+                  <div className="text-right">
+                    <div
+                      className={`flex items-center gap-1 font-semibold justify-end ${
+                        transaction.amount > 0 ? "text-accent" : "text-foreground"
+                      }`}
+                    >
+                      {transaction.amount > 0 ? (
+                        <ArrowUpRight className="h-4 w-4" />
+                      ) : (
+                        <ArrowDownLeft className="h-4 w-4" />
+                      )}
+                      {transaction.amount > 0 ? "+" : ""}
+                      {Math.abs(transaction.amount).toFixed(2)}
+                    </div>
                     <p className="text-sm text-muted-foreground">{transaction.category}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className={`font-semibold ${transaction.amount > 0 ? "text-accent" : "text-foreground"}`}>
-                    {transaction.amount > 0 ? "+" : ""}${Math.abs(transaction.amount).toFixed(2)}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{transaction.date}</p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">No transactions found</p>
               </div>
-            ))}
+            )}
+        
           </div>
         </CardContent>
       </Card>

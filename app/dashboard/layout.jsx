@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }) {
   const hasFetchedRef = useRef(false);
   const [fetchError, setFetchError] = useState(false);
   const [retrying, setRetrying] = useState(false);
-  console.log(user)
+  
   const handleRetry = async () => {
     setRetrying(true);
     setFetchError(false);
@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }) {
     );
   }
 
-  // ✅ No user and no error - likely auth issue
+
   if (!user) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
@@ -171,7 +171,7 @@ export default function DashboardLayout({ children }) {
     );
   }
 
-  // Authenticated - show dashboard
+
   return (
     <div className="flex h-screen bg-background">
       <Sidebar />

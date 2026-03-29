@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { LayoutDashboard, CreditCard, TrendingUp, Target, Settings, X } from "lucide-react";
 import { Button } from "@/components/ui_kits/Button";
-
+import Link from "next/link";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/transactions", label: "Transactions", icon: CreditCard },
@@ -36,7 +36,7 @@ export function MobileNav({ open, onOpenChange }) {
             const Icon = item.icon;
 
             return (
-              <a
+              <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => {
@@ -51,7 +51,7 @@ export function MobileNav({ open, onOpenChange }) {
               >
                 <Icon className="h-5 w-5" />
                 <span className="font-medium">{item.label}</span>
-              </a>
+              </Link>
             );
           })}
         </div>
