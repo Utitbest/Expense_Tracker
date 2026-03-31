@@ -6,7 +6,7 @@ import { Input } from "@/components/ui_kits/Input";
 import { Label } from "@/components/ui_kits/Label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui_kits/Select";
 import { Search, Download, Plus, ArrowUpRight, ArrowDownLeft } from "lucide-react";
-import { AddTransactionModal } from "@/components/dashboard/Addtransactionmodal";
+import { AddTransactionModal } from "@/components/dashboard/AddTransactionModal";
 import { useTransaction } from "@/hooks/useTransaction";
 import { formatTransactions } from "@/lib/utils";
 

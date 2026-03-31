@@ -25,10 +25,7 @@ export const useAuthStore = create(
         set({ isLoading: true });
         
         try {
-          const response = await fetch('/api/auth/me', {
-            signal: AbortSignal.timeout(15000),
-          }
-        );
+          const response = await fetch('/api/auth/me');
 
           if (response.status === 401) {
             console.log("401 Unauthorized - invalid token");
@@ -79,11 +76,6 @@ export const useAuthStore = create(
         } catch (error) {
           console.error('Fetch error:', error);
           set({ isLoading: false });
-          
-          if (error.name === 'AbortError') {
-            return { success: false, error: 'timeout' };
-          }
-          
           return { success: false, error: 'network_error' };
         }
       },

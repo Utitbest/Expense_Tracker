@@ -6,7 +6,17 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-
+export const CATEGORY_COLORS = {
+  Food:          "#2563eb",
+  Transport:     "#10b981",
+  Entertainment: "#f59e0b",
+  Utilities:     "#ef4444",
+  Shopping:      "#8b5cf6",
+  Healthcare:    "#ec4899",
+  Education:     "#06b6d4",
+  Income:        "#22c55e",
+  Other:         "#94a3b8",
+};
 
 export const CATEGORY_ICONS = {
   Food:          "🍽️",
