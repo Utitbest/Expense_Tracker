@@ -19,56 +19,33 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui_kits/Button";
 import { Spinner } from "../ui_kits/Spinner";
 import { useTransaction } from "@/hooks/useTransaction";
-import { formatTransactions } from "@/lib/utils";
+import { formatTransactions, formatCategoryChartData, formatChartData } from "@/lib/utils";
 import { Plus, ArrowUpRight, ArrowDownLeft, ArrowDownRight } from "lucide-react";
+import { useCategory } from "@/hooks/useCategory";
 
-
-const categoryData = [
-  { name: "Food", value: 35, color: "#2563eb" },
-  { name: "Transport", value: 25, color: "#10b981" },
-  { name: "Entertainment", value: 20, color: "#f59e0b" },
-  { name: "Utilities", value: 15, color: "#ef4444" },
-  { name: "Other", value: 5, color: "#8b5cf6" },
-];
-
-
-
-const recentTransactions = [
-  { id: 1, name: "Coffee Shop", category: "Food", amount: -5.5, date: "Today", icon: "☕" },
-  { id: 2, name: "Salary Deposit", category: "Income", amount: 3500, date: "Yesterday", icon: "💰" },
-  { id: 3, name: "Gas", category: "Transport", amount: -45, date: "2 days ago", icon: "⛽" },
-  { id: 4, name: "Netflix", category: "Entertainment", amount: -12.99, date: "3 days ago", icon: "🎬" },
-  { id: 5, name: "Groceries", category: "Food", amount: -85.3, date: "4 days ago", icon: "🛒" },
-];
-
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-const formatChartData = (records) => {
-  return records.map((record) => ({
-    month: monthNames[record.month - 1],
-    income: record.income,
-    expenses: record.expenses,
-  }));
-};
 
 export function DashboardContent() {
-
   const [chartData, setChartData] = useState([]);
+  const [categoryData, setCategoryChartData] = useState([]);
   const { getSummary, getHistory, summary, error: summaryError, loading: summaryLoading } = useMonthlyRecord();
-
+  const { getCategories, loading: categoryLoading, error: categoryError } = useCategory();
   const { getTransactions, transactions, error: transactionError, loading: transactionLoading } = useTransaction();
 
   useEffect(() => {
     const fetchData = async () => {
       const now = new Date();
-      const [summaryResult, historyResult, transactionResult] = await Promise.all([
+      const [summaryResult, historyResult, transactionResult, categoryResult] = await Promise.all([
         await getSummary({ year: now.getFullYear(), month: now.getMonth() + 1 }),
         await getHistory(),
-        await getTransactions()
+        await getTransactions(),
+        await getCategories()
       ]);
       if (historyResult.success) {
         const formatted = formatChartData(historyResult.data.records);
         setChartData(formatted);
+      }
+      if(categoryResult.success){
+        setCategoryChartData(formatCategoryChartData(categoryResult.data.categories));
       }
     };
     fetchData();
@@ -187,23 +164,19 @@ export function DashboardContent() {
           </CardHeader>
           <CardContent>
             {summaryLoading ? (
-                // Loading state
-                <div className="flex items-center justify-center h-[300px]">
+                <div className="flex items-center justify-center h-75">
                   <div className="w-8 h-8 border-4 border-muted rounded-full border-t-primary animate-spin" />
                 </div>
               ) : summaryError ? (
-                // Error state
-                <div className="flex flex-col items-center justify-center h-[300px] gap-2">
+                <div className="flex flex-col items-center justify-center h-75 gap-2">
                   <p className="text-destructive text-sm font-medium">Failed to load chart data</p>
                   <p className="text-muted-foreground text-xs">{error}</p>
                 </div>
               ) : chartData.length === 0 ? (
-                // Empty state
-                <div className="flex items-center justify-center h-[300px]">
+                <div className="flex items-center justify-center h-75">
                   <p className="text-muted-foreground text-sm">No records found</p>
                 </div>
               ) : (
-                // Success state
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
@@ -225,24 +198,40 @@ export function DashboardContent() {
             <CardDescription>Expenses by category</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={categoryData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, value }) => `${name} ${value}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {categoryData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+            {categoryLoading ? (
+                <div className="flex items-center justify-center h-75">
+                  <div className="w-8 h-8 border-4 border-muted rounded-full border-t-primary animate-spin" />
+                </div>
+              ) : categoryError ? (
+                <div className="flex flex-col items-center justify-center h-75 gap-2">
+                  <p className="text-destructive text-sm font-medium">Failed to load chart data</p>
+                  <p className="text-muted-foreground text-xs">{error}</p>
+                </div>
+              ) : chartData.length === 0 ? (
+                <div className="flex items-center justify-center h-75">
+                  <p className="text-muted-foreground text-sm">No records found</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={categoryData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, value }) => `${name} ${value}%`}
+                      outerRadius={70}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
+            
           </CardContent>
         </Card>
       </div>
