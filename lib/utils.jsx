@@ -50,7 +50,7 @@ export const categories = [
   "Income", 
   "Other"
 ];
-const CATEGORIES = [
+export const CATEGORIES = [
   "Food",
   "Transport",
   "Entertainment",
