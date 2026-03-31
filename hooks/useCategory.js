@@ -20,7 +20,7 @@ export const useCategory = () => {
         throw new Error(data.message || "Failed to fetch categories");
       }
 
-      setCategories(data.categories);
+      setCategories(data?.categories);
       return { success: true, data };
     } catch (err) {
       setError(err.message);
