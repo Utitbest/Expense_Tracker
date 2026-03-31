@@ -38,6 +38,29 @@ export const formatDate = (date) => {
   });
 };
 
+export const categories = [
+  "all", 
+  "Food", 
+  "Transport", 
+  "Entertainment", 
+  "Utilities", 
+  "Healthcare", 
+  "Education", 
+  "Shopping", 
+  "Income", 
+  "Other"
+];
+const CATEGORIES = [
+  "Food",
+  "Transport",
+  "Entertainment",
+  "Utilities",
+  "Healthcare",
+  "Education",
+  "Shopping",
+  "Income",
+  "Other",
+];
 export const formatTransaction = (transaction) => ({
   id:          transaction._id,
   name:        transaction.name,

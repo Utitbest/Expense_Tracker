@@ -6,9 +6,9 @@ import { Input } from "@/components/ui_kits/Input";
 import { Label } from "@/components/ui_kits/Label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui_kits/Select";
 import { Search, Download, Plus, ArrowUpRight, ArrowDownLeft } from "lucide-react";
-import { AddTransactionModal } from "@/components/dashboard/AddTransactionModal";
+import { AddTransactionModal } from "@/components/dashboard/Addtransactionmodal";
 import { useTransaction } from "@/hooks/useTransaction";
-import { formatTransactions } from "@/lib/utils";
+import { formatTransactions, categories} from "@/lib/utils";
 
 export function TransactionsPage() {
   const { getTransactions, transactions, loading, error } = useTransaction();
@@ -16,7 +16,6 @@ export function TransactionsPage() {
   const [filterCategory, setFilterCategory] = useState("all");
   const [open, setOpen] = useState(false);
 
-  const categories = ["all", "Food", "Transport", "Entertainment", "Utilities", "Healthcare", "Education", "Shopping", "Income", "Other"];
 
   useEffect(() => {
     const fetchData = async () => {

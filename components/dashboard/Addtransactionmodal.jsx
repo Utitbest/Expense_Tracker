@@ -4,7 +4,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import { Modal } from "@/components/ui_kits/Modal";
 import { useTransaction } from "@/hooks/useTransaction";
-import { CATEGORY_ICONS } from "@/lib/utils";
+import { CATEGORY_ICONS, CATEGORIES } from "@/lib/utils";
 import { Button } from "@/components/ui_kits/Button";
 import { Input } from "@/components/ui_kits/Input";
 import { Label } from "@/components/ui_kits/Label";
@@ -20,17 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui_kits/Select";
 
-const CATEGORIES = [
-  "Food",
-  "Transport",
-  "Entertainment",
-  "Utilities",
-  "Healthcare",
-  "Education",
-  "Shopping",
-  "Income",
-  "Other",
-];
 
 const initialForm = {
   name: "",
@@ -77,7 +66,6 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-        {/* Transaction Name */}
         <div className="flex flex-col gap-1">
           <Label htmlFor="name">Transaction Name</Label>
           <Input
@@ -92,7 +80,6 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
           />
         </div>
 
-        {/* Amount + Type row */}
         <div className="flex gap-3">
           <div className="flex flex-col gap-1 flex-1">
             <Label htmlFor="amount">Amount</Label>
@@ -130,7 +117,6 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
           </div>
         </div>
 
-        {/* Category */}
         <div className="flex flex-col gap-1">
           <Label htmlFor="category">Category</Label>
           <Select
@@ -153,7 +139,6 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
           </Select>
         </div>
 
-        {/* Date */}
         <div className="flex flex-col gap-1">
             <Label htmlFor="date">Date</Label>
             <div className="relative">
@@ -185,7 +170,6 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
             </div>
         </div>
 
-        {/* Description (optional) */}
         <div className="flex flex-col gap-1">
           <Label htmlFor="description">
             Description{" "}
@@ -201,7 +185,6 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
           />
         </div>
 
-        {/* Submit Button */}
         <Button type="submit" disabled={loading} className="w-full">
           {loading ? <Spinner /> : "Add Transaction"}
         </Button>
