@@ -66,7 +66,6 @@ export function SettingsPage() {
             <Label>Profile Picture</Label>
             <div className="mt-2 flex items-center gap-4">
                 {hasValidImage ? (
-                  // ✅ Google user with valid image
                   <Image
                     src={user.image}
                     alt={user.name}
@@ -75,7 +74,6 @@ export function SettingsPage() {
                     className="rounded-full w-20 h-20 border-2 border-primary"
                   />
                 ) : (
-                  // ✅ Placeholder for non-Google or no image
                   <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center text-3xl">
                     👤
                   </div>

@@ -75,7 +75,6 @@ export const useMonthlyRecord = () => {
     }
   };
 
-  // GET /api/finance/history
   const getHistory = async () => {
     setLoading(true);
     setError(null);
@@ -100,7 +99,6 @@ export const useMonthlyRecord = () => {
     }
   };
 
-  // DELETE /api/finance/record
   const deleteRecord = async ({ year, month }) => {
     setLoading(true);
     setError(null);

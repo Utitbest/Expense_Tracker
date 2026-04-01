@@ -12,14 +12,10 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { errorMessages } from "@/lib/utils";
 
 export function LoginForm() {
-  const errorMessages = {
-    google_failed: "Google sign-in failed. Please try again.",
-    no_code: "Authentication failed - no code received.",
-    token_failed: "Failed to get access token from Google.",
-    no_email: "Could not retrieve email from Google.",
-  };
+
   const [newError, setNewError] = useState(null)
   const { login, loading, error } = useAuth();
   const [input, setInput] = useState({

@@ -44,7 +44,6 @@ const insights = [
 export function AnalyticsPage() {
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Analytics & Insights</h1>
@@ -63,7 +62,6 @@ export function AnalyticsPage() {
         </Select>
       </div>
 
-      {/* Insights Cards */}
       <div className="grid md:grid-cols-2 gap-6">
         {insights.map((insight, idx) => (
           <Card key={idx} className="hover:border-primary/50 transition-colors">
@@ -90,7 +88,6 @@ export function AnalyticsPage() {
         ))}
       </div>
 
-      {/* Spending Trend */}
       <Card>
         <CardHeader>
           <CardTitle>Spending Trend</CardTitle>
@@ -122,7 +119,6 @@ export function AnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* Category Comparison */}
       <Card>
         <CardHeader>
           <CardTitle>Category Comparison</CardTitle>
@@ -143,7 +139,6 @@ export function AnalyticsPage() {
         </CardContent>
       </Card>
 
-      {/* Summary Stats */}
       <div className="grid md:grid-cols-4 gap-6">
         {[
           { label: "Total Spent", value: "$3,567.50", change: "+12%" },

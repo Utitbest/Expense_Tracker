@@ -6,21 +6,15 @@ import Link from "next/link";
 import { useActivePath } from "@/hooks/useActivePath";
 import { useAuth } from "@/hooks/useAuth"
 import { Modal } from "@/components/ui_kits/Modal";
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/transactions", label: "Transactions", icon: CreditCard },
-  { href: "/dashboard/categories", label: "Categories", icon: LayoutDashboard },
-  { href: "/dashboard/budgets", label: "Budgets", icon: Target },
-  { href: "/dashboard/analytics", label: "Analytics", icon: TrendingUp },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
-];
+import { navItems } from "@/lib/utils";
+
 
 export function Sidebar() {
   const { logout, loading } = useAuth()
   const {activePath, updatePath} = useActivePath("/dashboard")
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-   const handleLogoutClick = (e) => {
+  const handleLogoutClick = (e) => {
     e.preventDefault();
     setShowLogoutModal(true);
   };

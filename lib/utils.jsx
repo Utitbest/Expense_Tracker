@@ -1,10 +1,17 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { LayoutDashboard, CreditCard, TrendingUp, Target, Settings } from "lucide-react";
 
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+export const errorMessages = {
+  google_failed: "Google sign-in failed. Please try again.",
+  no_code: "Authentication failed - no code received.",
+  token_failed: "Failed to get access token from Google.",
+  no_email: "Could not retrieve email from Google.",
+};
 
 export const CATEGORY_COLORS = {
   Food:          "#2563eb",
@@ -29,6 +36,16 @@ export const CATEGORY_ICONS = {
   Income:        "💰",
   Other:         "📦",
 };
+
+export const navItems = [
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/transactions", label: "Transactions", icon: CreditCard },
+  { href: "/dashboard/categories", label: "Categories", icon: LayoutDashboard },
+  { href: "/dashboard/budgets", label: "Budgets", icon: Target },
+  { href: "/dashboard/analytics", label: "Analytics", icon: TrendingUp },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
+];
+
 
 export const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {

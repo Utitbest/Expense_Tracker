@@ -30,7 +30,6 @@ export function DashboardContent() {
   const { getSummary, getHistory, summary, error: summaryError, loading: summaryLoading } = useMonthlyRecord();
   const { getCategories, loading: categoryLoading, error: categoryError } = useCategory();
   const { getTransactions, transactions, error: transactionError, loading: transactionLoading } = useTransaction();
-
   useEffect(() => {
     const fetchData = async () => {
       const now = new Date();
@@ -52,7 +51,6 @@ export function DashboardContent() {
   }, []);
 
   const formattedTransactions = formatTransactions(transactions);
-
 
   return (
     <div className="p-6 space-y-6">
@@ -207,7 +205,7 @@ export function DashboardContent() {
                   <p className="text-destructive text-sm font-medium">Failed to load chart data</p>
                   <p className="text-muted-foreground text-xs">{error}</p>
                 </div>
-              ) : chartData.length === 0 ? (
+              ) : categoryData.length === 0 ? (
                 <div className="flex items-center justify-center h-75">
                   <p className="text-muted-foreground text-sm">No records found</p>
                 </div>
@@ -266,7 +264,7 @@ export function DashboardContent() {
                   key={transaction.id}
                   className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors"
                 >
-                  <div className="flex items-center gap-4 flex-1">
+                  <div className="flex items-center gap-4 flex-1 min-w-0">
                     <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-lg">
                       {transaction.icon}
                     </div>
@@ -275,7 +273,7 @@ export function DashboardContent() {
                       <p className="text-sm text-muted-foreground">{transaction.date}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <div
                       className={`flex items-center gap-1 font-semibold justify-end ${
                         transaction.amount > 0 ? "text-accent" : "text-foreground"

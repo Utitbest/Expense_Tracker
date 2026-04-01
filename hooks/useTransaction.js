@@ -8,7 +8,6 @@ export const useTransaction = () => {
   const [error, setError] = useState(null);
   const [transactions, setTransactions] = useState([]);
 
-  // POST /api/transactions
   const addTransaction = async ({ name, amount, type, category, date, status, description }) => {
     setLoading(true);
     setError(null);

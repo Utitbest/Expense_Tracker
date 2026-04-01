@@ -1,27 +1,38 @@
 "use client"
 import React, { useState } from "react";
-import { LayoutDashboard, CreditCard, TrendingUp, Target, Settings, X } from "lucide-react";
+import { X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui_kits/Button";
 import Link from "next/link";
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/transactions", label: "Transactions", icon: CreditCard },
-  { href: "/dashboard/budgets", label: "Budgets", icon: Target },
-  { href: "/dashboard/analytics", label: "Analytics", icon: TrendingUp },
-  { href: "/dashboard/settings", label: "Settings", icon: Settings },
-];
+import { navItems } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth"
+import { Modal } from "@/components/ui_kits/Modal";
 
 export function MobileNav({ open, onOpenChange }) {
   const [activePath, setActivePath] = useState("/dashboard");
+  const { logout, loading } = useAuth()
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
 
   if (!open) return null;
+
+
+  const handleConfirmLogout = async () => {
+    await logout();
+    setShowLogoutModal(false);
+  };
+
+  const handleLogoutClick = (e) => {
+    e.preventDefault();
+    setShowLogoutModal(true);
+  };
+
 
   return (
     <div className="md:hidden fixed inset-0 z-50 flex">
       <div
         className="absolute inset-0 bg-black/50"
-        onClick={() => onOpenChange(false)}
-      ></div>
+        onClick={() => onOpenChange(false)}>
+      </div>
       <nav className="relative bg-card w-64 border-r border-border flex flex-col">
         <div className="p-4 flex justify-between items-center border-b border-border">
           <span className="font-bold">Menu</span>
@@ -55,7 +66,48 @@ export function MobileNav({ open, onOpenChange }) {
             );
           })}
         </div>
+
+        <div className="border-t border-border p-4">
+          <Button onClick={handleLogoutClick} disabled={loading} variant="outline" className="w-full justify-start gap-3 bg-transparent">
+              <LogOut className="h-5 w-5" />
+              Logout
+          </Button>
+        </div>
       </nav>
+
+      <Modal
+        open={showLogoutModal}
+        onOpenChange={setShowLogoutModal}
+        title="Confirm Logout"
+        description="Are you sure you want to logout? You will need to sign in again to access your account."
+      >
+        <div className="flex gap-3 justify-end pt-4">
+          <Button
+            variant="outline"
+            onClick={() => setShowLogoutModal(false)}
+            disabled={loading}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmLogout}
+            disabled={loading}
+            className="bg-red-600 hover:bg-red-700 text-white"
+          >
+            {loading ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                Logging out...
+              </>
+            ) : (
+              <>
+                <LogOut className="h-4 w-4 mr-2" />
+                Yes, Logout
+              </>
+            )}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { logout, loading } = useAuth()
-  const { user, isAuthenticated, isLoading, fetchUser, setUser, clearUser } = useAuthStore();
+  const { user, isLoading, fetchUser, setUser, clearUser } = useAuthStore();
   const hasFetchedRef = useRef(false);
   const [fetchError, setFetchError] = useState(false);
   const [retrying, setRetrying] = useState(false);
