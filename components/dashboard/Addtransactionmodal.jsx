@@ -97,7 +97,7 @@ export function AddTransactionModal({ open, onOpenChange, onSuccess }) {
             />
           </div>
 
-          <div className="flex flex-col gap-1 w-[140px]">
+          <div className="flex flex-col gap-1 w-35">
             <Label htmlFor="type">Type</Label>
             <Select
              disabled={loading}

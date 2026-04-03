@@ -1,5 +1,3 @@
-// models/Category.js
-
 import mongoose from "mongoose";
 
 const CategorySchema = new mongoose.Schema(
@@ -29,12 +27,17 @@ const CategorySchema = new mongoose.Schema(
       },
     },
 
-    // Budget the user sets for this category
     budget: {
       type: Number,
       required: [true, "Budget is required"],
       min: [0, "Budget cannot be negative"],
       default: 0,
+    },
+
+    period:{
+      type: String,
+      enum: ["Weekly", "Monthly", "Yearly"],
+      default: "Monthly",
     },
   },
   {

@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -30,7 +31,7 @@ export const useCategory = () => {
     }
   };
 
-  const saveCategory = async ({ name, budget }) => {
+  const saveCategory = async ({ name, budget, period }) => {
     setLoading(true);
     setError(null);
     const loadingToast = toast.loading("Saving category...");
@@ -39,7 +40,7 @@ export const useCategory = () => {
       const response = await fetch("/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, budget }),
+        body: JSON.stringify({ name, budget, period }),
       });
 
       const data = await response.json();
@@ -48,7 +49,7 @@ export const useCategory = () => {
         throw new Error(data.message || "Failed to save category");
       }
 
-      toast.success("Category saved successfully! 🎉", { id: loadingToast });
+      toast.success("Category saved successfully! ", { id: loadingToast });
       return { success: true, data };
     } catch (err) {
       setError(err.message);
@@ -59,7 +60,7 @@ export const useCategory = () => {
     }
   };
 
-  const updateCategory = async ({ id, budget }) => {
+  const updateCategory = async ({ id, budget, period }) => {
     setLoading(true);
     setError(null);
     const loadingToast = toast.loading("Updating budget...");
@@ -68,7 +69,7 @@ export const useCategory = () => {
       const response = await fetch(`/api/categories/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ budget }),
+        body: JSON.stringify({ budget, period }),
       });
 
       const data = await response.json();
@@ -97,12 +98,13 @@ export const useCategory = () => {
       const response = await fetch(`/api/categories/${id}`, {
         method: "DELETE",
       });
-      
+
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to reset category");
       }
+
       toast.success("Category budget reset successfully!", { id: loadingToast });
       return { success: true, data };
     } catch (err) {

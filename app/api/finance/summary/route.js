@@ -26,7 +26,6 @@ export async function GET(request) {
     const year = parseInt(searchParams.get("year")) || now.getFullYear();
     const month = parseInt(searchParams.get("month")) || now.getMonth() + 1;
 
-    // Get current month record for this user
     const record = await MonthlyRecord.findOne({
       userId: decoded.userId,
       year,

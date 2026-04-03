@@ -7,35 +7,41 @@ import { Input } from "@/components/ui_kits/Input";
 import { Label } from "@/components/ui_kits/Label";
 import { Spinner } from "@/components/ui_kits/Spinner";
 import { useCategory } from "@/hooks/useCategory";
+import { Calendar } from "lucide-react";
+import { PERIODS } from "@/lib/utils"
+
 
 export function EditCategoryModal({ open, onOpenChange, category, onSuccess }) {
   const { saveCategory, updateCategory, loading } = useCategory();
   const [budget, setBudget] = useState("");
-
+  const [period, setPeriod] = useState("Monthly");
+  const [alertThreshold, setAlertThreshold] = useState(80);
 
   useEffect(() => {
     if (category) {
       setBudget(category.budget?.toString() || "");
+      setPeriod(category.period || "Monthly");
+      setAlertThreshold(category.alertThreshold || 80);
     }
   }, [category]);
 
   if (!category) return null;
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let result;
-
-    if (category?.id) {
+    if (category.id) {
       result = await updateCategory({
         id: category.id,
         budget: parseFloat(budget),
+        period,
       });
     } else {
       result = await saveCategory({
         name: category.name,
         budget: parseFloat(budget),
+        period,
       });
     }
 
@@ -52,8 +58,8 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }) {
       title={`Edit ${category?.name} Budget`}
       description="Set a monthly budget limit for this category."
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Category display — read only */}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
         <div className="flex items-center gap-3 p-3 rounded-lg bg-muted">
           <span className="text-2xl">{category?.icon}</span>
           <div>
@@ -65,7 +71,7 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <Label htmlFor="budget">Monthly Budget ($)</Label>
+          <Label htmlFor="budget">Budget Amount ($)</Label>
           <Input
             id="budget"
             name="budget"
@@ -79,9 +85,54 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }) {
           />
         </div>
 
+        <div className="flex flex-col gap-2">
+          <Label>Period</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {PERIODS.map((p) => (
+              <button
+                disabled={loading}
+                key={p}
+                type="button"
+                onClick={() => setPeriod(p)}
+                className={`flex flex-col items-center justify-center gap-1 p-3 rounded-lg border transition-colors ${
+                  period === p
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border bg-muted hover:border-primary/50"
+                }`}
+              >
+                <Calendar className="h-4 w-4" />
+                <span className="text-sm font-medium">{p}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <Label htmlFor="alertThreshold">Alert Threshold (%)</Label>
+            <span className="text-sm font-semibold text-primary">{alertThreshold}%</span>
+          </div>
+          <input
+            id="alertThreshold"
+            type="range"
+            min="10"
+            max="100"
+            step="5"
+            value={alertThreshold}
+            onChange={(e) => setAlertThreshold(parseInt(e.target.value))}
+            className="w-full h-2 bg-muted rounded-full appearance-none cursor-pointer accent-primary"
+          />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>10%</span>
+            <span>Alert when budget reaches this %</span>
+            <span>100%</span>
+          </div>
+        </div>
+
         <Button type="submit" disabled={loading} className="w-full">
           {loading ? <Spinner /> : "Save Budget"}
         </Button>
+
       </form>
     </Modal>
   );
@@ -90,19 +141,15 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }) {
 export function DeleteCategoryModal({ open, onOpenChange, category, onSuccess }) {
   const { deleteCategory, loading } = useCategory();
 
-
   if (!category) return null;
-
 
   const handleDelete = async () => {
     const result = await deleteCategory({ id: category.id });
-
     if (result.success) {
       onOpenChange(false);
       if (onSuccess) onSuccess();
     }
   };
-
 
   return (
     <Modal
@@ -117,7 +164,7 @@ export function DeleteCategoryModal({ open, onOpenChange, category, onSuccess })
           <div>
             <p className="font-medium">{category?.name}</p>
             <p className="text-xs text-muted-foreground">
-              Current budget: ${category?.budget?.toFixed(2)}
+              Current budget: ${category?.budget?.toFixed(2)} · {category?.period}
             </p>
           </div>
         </div>

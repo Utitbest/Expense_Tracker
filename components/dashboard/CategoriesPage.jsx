@@ -23,6 +23,9 @@ export function CategoriesPage() {
     fetchData();
   }, []);
 
+  const CategoryFilterIncome = categories.filter(e => e.name !== "Income")
+  console.log("cate", CategoryFilterIncome)
+
   const handleEditClick = (category) => {
     setSelectedCategory(category);
     setEditOpen(true);
@@ -54,7 +57,8 @@ export function CategoriesPage() {
 
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((category) => {
+          {categories.filter(e => e.name !== "Income").map((category) => {
+
             const percentage = category.budget > 0
               ? Math.round((category.spent / category.budget) * 100)
               : 0;
@@ -137,7 +141,6 @@ export function CategoriesPage() {
         </div>
       )}
 
-      {/* Edit Modal */}
       <EditCategoryModal
         open={editOpen}
         onOpenChange={setEditOpen}
@@ -145,7 +148,6 @@ export function CategoriesPage() {
         onSuccess={() => getCategories()}
       />
 
-      {/* Delete Confirm Modal */}
       <DeleteCategoryModal
         open={deleteOpen}
         onOpenChange={setDeleteOpen}

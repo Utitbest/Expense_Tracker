@@ -10,18 +10,9 @@ import mongoose from "mongoose";
 import { DBConnect } from "@/lib/db";
 import Category from "@/models/Category";
 import Transaction from "@/models/Transaction";
+import { CATEGORIES } from "@/lib/utils";
 
-const FIXED_CATEGORIES = [
-  "Food",
-  "Transport",
-  "Entertainment",
-  "Utilities",
-  "Healthcare",
-  "Education",
-  "Shopping",
-  "Income",
-  "Other",
-];
+
 
 export async function GET(request) {
   try {
@@ -59,15 +50,15 @@ export async function GET(request) {
       };
     });
 
-    const categories = FIXED_CATEGORIES.map((name) => {
+    const categories = CATEGORIES.map((name) => {
       const saved = savedCategories.find((c) => c.name === name);
-      const spent = spentMap[name] || { spent: 0, transactions: 0 };
-
+      const spent = spentMap[name] || { spent: 0, transactions: 0 };      
       return {
         id: saved?._id || null,
         name,
         budget: saved?.budget || 0,
         spent: spent.spent,
+        period: saved?.period,
         transactions: spent.transactions,
       };
     });
@@ -95,9 +86,9 @@ export async function POST(request) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     await DBConnect();
 
-    const { name, budget } = await request.json();
+    const { name, budget, period } = await request.json();
 
-    if (!name || budget == null) {
+    if (!name || budget == null, !period) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
         { status: 400 }
@@ -113,7 +104,7 @@ export async function POST(request) {
 
     const category = await Category.findOneAndUpdate(
       { userId: decoded.userId, name },
-      { budget },
+      { budget, period},
       { upsert: true, returnDocument: "after", runValidators: true }
     );
 

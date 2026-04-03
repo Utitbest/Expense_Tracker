@@ -23,7 +23,7 @@ export async function PUT(request, { params }) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     await DBConnect();
 
-    const { budget } = await request.json();
+    const { budget, period } = await request.json();
 
     if (budget == null || budget < 0) {
       return NextResponse.json(
@@ -34,7 +34,7 @@ export async function PUT(request, { params }) {
 
     const category = await Category.findOneAndUpdate(
       { _id: id, userId: decoded.userId },
-      { budget },
+      { budget, period },
       { returnDocument: "after", runValidators: true }
     );
 

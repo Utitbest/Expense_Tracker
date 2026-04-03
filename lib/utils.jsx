@@ -54,7 +54,7 @@ export const formatDate = (date) => {
     year: "numeric",
   });
 };
-
+export const PERIODS = ["Monthly", "Weekly", "Yearly"];
 export const categories = [
   "all", 
   "Food", 
