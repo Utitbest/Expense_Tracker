@@ -6,11 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui_kits/C
 import { Plus, AlertTriangle, MoreVertical, TrendingUp, X, ArrowUpRight, CheckCircle, AlertCircle, XCircle } from "lucide-react";
 import { useCategory } from "@/hooks/useCategory";
 import { EditCategoryModal, DeleteCategoryModal } from "@/components/dashboard/AddCategoryModal";
-import { CATEGORY_ICONS, CATEGORY_COLORS } from "@/lib/utils";
+import { CATEGORY_ICONS, CATEGORY_COLORS, PERIOD_FILTERS, STATUS_FILTERS } from "@/lib/utils";
 
-
-const PERIOD_FILTERS = ["All", "Weekly", "Monthly", "Yearly"];
-const STATUS_FILTERS = ["All", "On Track", "Warning", "Exceeded"];
 
 export function BudgetsPage() {
   const { getCategories, categories, loading, error } = useCategory();

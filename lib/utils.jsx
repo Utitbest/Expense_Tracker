@@ -24,7 +24,8 @@ export const CATEGORY_COLORS = {
   Income:        "#22c55e",
   Other:         "#94a3b8",
 };
-
+export const PERIOD_FILTERS = ["All", "Weekly", "Monthly", "Yearly"];
+export const STATUS_FILTERS = ["All", "On Track", "Warning", "Exceeded"];
 export const CATEGORY_ICONS = {
   Food:          "🍽️",
   Transport:     "🚗",
