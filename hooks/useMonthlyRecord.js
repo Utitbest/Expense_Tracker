@@ -7,7 +7,6 @@ export const useMonthlyRecord = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [summary, setSummary] = useState(null);
-  const [history, setHistory] = useState(null)
   const saveRecord = async ({ year, month, income, expenses }) => {
     setLoading(true);
     setError(null);
@@ -43,8 +42,6 @@ export const useMonthlyRecord = () => {
     }
   };
 
-  // GET /api/finance/summary?year=2026&month=3
-  // Returns currentBalance, totalIncome, totalExpenses, % change from last month
   const getSummary = async ({ year, month } = {}) => {
     setLoading(true);
     setError(null);

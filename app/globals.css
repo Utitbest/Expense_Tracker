@@ -80,6 +80,16 @@
   --sidebar-ring: oklch(0.68 0.12 240);
 }
 
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
 @theme inline {
   --font-sans: "Inter", "InterFallback", system-ui, sans-serif;
   --font-mono: "Geist Mono", "Geist Mono Fallback";

@@ -1,7 +1,33 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { LayoutDashboard, CreditCard, TrendingUp, Target, Settings } from "lucide-react";
+import { LayoutDashboard, Building2, CreditCard, Wallet, TrendingUp, Target, Settings } from "lucide-react";
 
+
+export const QUICK_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
+
+export const PAYMENT_METHODS = [
+  {
+    id: "bank",
+    label: "Bank",
+    description: "Visa ••••8765",
+    icon: Building2,
+    color: "#06b6d4",
+  },
+  {
+    id: "debit",
+    label: "Debit Card",
+    description: "Visa ••••8765",
+    icon: CreditCard,
+    color: "#06b6d4",
+  },
+  {
+    id: "paypal",
+    label: "PayPal",
+    description: "den@example.com",
+    icon: Wallet,
+    color: "#f97316",
+  },
+];
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));

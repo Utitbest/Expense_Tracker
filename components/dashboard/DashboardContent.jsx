@@ -38,7 +38,8 @@ export function DashboardContent() {
         await getHistory(),
         await getTransactions(),
         await getCategories()
-      ]);
+      ])
+
       if (historyResult.success) {
         const formatted = formatChartData(historyResult.data.records);
         setChartData(formatted);
@@ -47,7 +48,15 @@ export function DashboardContent() {
         setCategoryChartData(formatCategoryChartData(categoryResult.data.categories));
       }
     };
+    
     fetchData();
+
+    const handleDepositSuccess = () => fetchData();
+    window.addEventListener("deposit-success", handleDepositSuccess);
+
+    return () => {
+      window.removeEventListener("deposit-success", handleDepositSuccess);
+    };
   }, []);
 
   const formattedTransactions = formatTransactions(transactions);

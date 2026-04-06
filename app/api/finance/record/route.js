@@ -1,7 +1,3 @@
-// app/api/finance/record/route.js
-// POST   /api/finance/record  → Create or update a monthly record
-// DELETE /api/finance/record  → Delete a monthly record
-
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
@@ -40,18 +36,38 @@ export async function POST(request) {
       );
     }
 
+    // Get current month record to accumulate on top of existing values
+    const currentRecord = await MonthlyRecord.findOne({
+      userId: decoded.userId,
+      year,
+      month,
+    });
+
+    // Get previous month record for opening balance
     const previousRecord = await MonthlyRecord.findOne({
       userId: decoded.userId,
       $or: [{ year: { $lt: year } }, { year, month: { $lt: month } }],
     }).sort({ year: -1, month: -1 });
 
-    const openingBalance = previousRecord ? previousRecord.closingBalance : 0;
+    // Use existing opening balance if record exists, otherwise carry from previous month
+    const openingBalance = currentRecord?.openingBalance ?? 
+      (previousRecord ? previousRecord.closingBalance : 0);
 
-    const closingBalance = +(openingBalance + income - expenses).toFixed(2);
+    // Add to existing income and expenses instead of overwriting
+    const newIncome = +((currentRecord?.income || 0) + income).toFixed(2);
+    const newExpenses = +((currentRecord?.expenses || 0) + expenses).toFixed(2);
+
+    // Recalculate closing balance with accumulated totals
+    const closingBalance = +(openingBalance + newIncome - newExpenses).toFixed(2);
 
     const record = await MonthlyRecord.findOneAndUpdate(
       { userId: decoded.userId, year, month },
-      { openingBalance, income, expenses, closingBalance },
+      {
+        openingBalance,
+        income: newIncome,
+        expenses: newExpenses,
+        closingBalance,
+      },
       { upsert: true, returnDocument: "after", runValidators: true }
     );
 

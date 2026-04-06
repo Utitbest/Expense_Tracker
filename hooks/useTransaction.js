@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -43,8 +42,7 @@ export const useTransaction = () => {
     }
   };
 
-  // GET /api/transactions
-  // Optional filters: type ("income" | "expense"), category
+  
   const getTransactions = async ({ type, category } = {}) => {
     setLoading(true);
     setError(null);

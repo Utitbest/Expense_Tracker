@@ -23,9 +23,6 @@ export function CategoriesPage() {
     fetchData();
   }, []);
 
-  const CategoryFilterIncome = categories.filter(e => e.name !== "Income")
-  console.log("cate", CategoryFilterIncome)
-
   const handleEditClick = (category) => {
     setSelectedCategory(category);
     setEditOpen(true);

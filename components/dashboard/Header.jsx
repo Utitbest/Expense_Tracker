@@ -6,10 +6,16 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { Menu, Plus } from "lucide-react";
 import { MobileNav } from "@/components/dashboard/MobileNav";
 import { AddExpenseModal } from "@/components/dashboard/AddExpenseModal";
+import { AddDeposit } from "@/components/dashboard/AddDeposit";
+import { useActivePath } from "@/hooks/useActivePath";
+import { navItems } from "@/lib/utils";
+
 export function Header() {
+  const { activePath } = useActivePath("/dashboard");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [open, setOpen] = useState(false)
-
+  const [depositOpen, setDepositOpen] = useState(false);
+  const currentTab = navItems.find((item) => item.href === activePath);
   return (
     <>
       <header className="border-b border-border bg-card px-6 py-4 flex items-center justify-between">
@@ -20,13 +26,13 @@ export function Header() {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <h1 className="text-2xl font-bold hidden sm:block">Dashboard</h1>
+          <h1 className="text-2xl font-bold hidden sm:block">{currentTab.label}</h1>
         </div>
 
         <div className="flex items-center gap-4">
-          <Button onClick={() => setOpen(true)} className="gap-2" size="sm">
+          <Button  onClick={() => setDepositOpen(true)} className="gap-2" size="sm">
             <Plus className="h-4 w-4" />
-            <span className="hidden sm:inline">Add Expense</span>
+            <span className="hidden sm:inline">Deposit</span>
           </Button>
           <ThemeToggle />
           <LanguageSelector />
@@ -34,6 +40,13 @@ export function Header() {
       </header>
       <MobileNav open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
       <AddExpenseModal open={open} onOpenChange={setOpen} />
+      <AddDeposit
+        open={depositOpen}
+        onOpenChange={setDepositOpen}
+         onSuccess={() => {
+          window.dispatchEvent(new Event("deposit-success"));
+        }}
+      />
     </>
   );
 }
