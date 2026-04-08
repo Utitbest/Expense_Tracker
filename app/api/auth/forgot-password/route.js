@@ -33,9 +33,6 @@ export async function POST(request) {
   });
 
 
-  // Remaining to test this endpoint very well and 
-
-  
   const info = { name: user?.name, email: user?.email}
   const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
 
