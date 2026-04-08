@@ -72,8 +72,6 @@ export async function GET(req) {
       path: "/",
     });
 
-    console.log("✅ Google signup/login successful, redirecting to:", redirectUrl);
-    // ✅ Return the response here
     await new Promise(resolve => setTimeout(resolve, 100));
     return response;
 

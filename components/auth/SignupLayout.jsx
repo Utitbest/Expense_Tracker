@@ -61,7 +61,6 @@ export function SignupForm() {
     });
 
     if (result.success) {
-      console.log("Signup successful!", result.data);
       router.push("/dashboard");
     }
   };

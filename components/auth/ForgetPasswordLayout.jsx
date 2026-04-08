@@ -9,18 +9,29 @@ import { Label } from "@/components/ui_kits/Label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { useForgetPassword } from "@/hooks/useForgetPassword"
+import { Spinner } from "@/components/ui_kits/Spinner";
+
 
 export function ForgotPasswordForm() {
+
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { Forget, loading } = useForgetPassword();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    setSubmitted(true);
+    if(!email) return;
+
+    const result = await Forget({email})
+    if(result.success){
+      setSubmitted(true);
+    }
+
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/50 flex flex-col">
       <div className="p-4 flex justify-between items-center border-b border-border/50">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
@@ -63,19 +74,26 @@ export function ForgotPasswordForm() {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full">
-                      Send Reset Link <ArrowRight className="ml-2 h-4 w-4" />
+                    <Button disabled={loading} type="submit" className="w-full">
+                      {loading ? (
+                        <>
+                          Resetting ...
+                          <Spinner className="size-3.5"/>
+                        </>
+                      ) : "Send Reset Link"} 
+                      {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
                     </Button>
                   </form>
 
                   <p className="text-center text-sm text-muted-foreground mt-6">
                     Remember your password?{" "}
-                    <Link
-                      href="/login"
-                      className="text-primary hover:underline font-semibold"
-                    >
-                      Back to login
-                    </Link>
+                      <Link
+                        disabled={loading}
+                        href="/login"
+                        className="text-primary hover:underline font-semibold"
+                      >
+                        Back to login
+                      </Link>
                   </p>
                 </CardContent>
               </>
