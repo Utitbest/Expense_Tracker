@@ -22,17 +22,7 @@ export async function POST(request) {
       { status: 200 }
     );
 
-    // Clear the token cookie
     response.cookies.delete("token");
-
-    // Alternative way to clear cookie (more explicit)
-    // response.cookies.set("token", "", {
-    //   httpOnly: true,
-    //   secure: process.env.NODE_ENV === "production",
-    //   sameSite: "strict",
-    //   maxAge: 0, // Expires immediately
-    //   path: "/",
-    // });
 
     return response;
 

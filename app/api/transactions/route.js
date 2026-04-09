@@ -110,10 +110,23 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get("type");
     const category = searchParams.get("category");
+    const months = searchParams.get("months");
+
 
     const filter = { userId: decoded.userId };
     if (type) filter.type = type;
     if (category) filter.category = category;
+    if (months) {
+      const now = new Date();
+      const numMonths = parseInt(months, 10);
+
+      const orFilter = [];
+      for (let i = 0; i < numMonths; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        orFilter.push({ month: d.getMonth() + 1, year: d.getFullYear() });
+      }
+      filter.$or = orFilter;
+    }
 
     const transactions = await Transaction.find(filter)
       .sort({ date: -1 })

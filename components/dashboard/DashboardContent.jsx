@@ -285,7 +285,7 @@ export function DashboardContent() {
                   <div className="text-right shrink-0">
                     <div
                       className={`flex items-center gap-1 font-semibold justify-end ${
-                        transaction.amount > 0 ? "text-accent" : "text-foreground"
+                        transaction.amount > 0 ? "text-accent" : "text-destructive"
                       }`}
                     >
                       {transaction.amount > 0 ? (

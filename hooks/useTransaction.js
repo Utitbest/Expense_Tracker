@@ -43,7 +43,7 @@ export const useTransaction = () => {
   };
 
   
-  const getTransactions = async ({ type, category } = {}) => {
+  const getTransactions = async ({ type, category, months } = {}) => {
     setLoading(true);
     setError(null);
 
@@ -51,6 +51,7 @@ export const useTransaction = () => {
       const params = new URLSearchParams();
       if (type) params.append("type", type);
       if (category) params.append("category", category);
+      if (months) params.append("months", months); 
 
       const url = `/api/transactions${params.toString() ? `?${params}` : ""}`;
 

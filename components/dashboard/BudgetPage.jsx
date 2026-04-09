@@ -99,7 +99,7 @@ export function BudgetsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">${totalBudget.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground mt-1">All categories combined</p>
+            <p className="text-xs text-muted-foreground mt-1 truncate">All categories combined</p>
           </CardContent>
         </Card>
         <Card>
@@ -108,7 +108,7 @@ export function BudgetsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">${totalSpent.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1 truncate">
               {totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0}% of budget used
             </p>
           </CardContent>
@@ -118,7 +118,7 @@ export function BudgetsPage() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Remaining</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={`text-3xl font-bold ${totalRemaining < 0 ? "text-destructive" : "text-accent"}`}>
+            <div className={`text-3xl font-bold ${totalRemaining < 0 ? "text-destructive" : "text-accent"} truncate`}>
               ${Math.abs(totalRemaining).toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground mt-1">

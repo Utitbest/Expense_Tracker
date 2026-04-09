@@ -100,11 +100,11 @@ export function CategoriesPage() {
                   <div className="grid grid-cols-2 gap-4 pt-2 border-t border-border">
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Spent</p>
-                      <p className="font-semibold">${category.spent.toFixed(2)}</p>
+                      <p className="font-semibold truncate">${category.spent.toFixed(2)}</p>
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground mb-1">Budget</p>
-                      <p className="font-semibold">
+                      <p className="font-semibold truncate">
                         {category.budget > 0 ? `$${category.budget.toFixed(2)}` : "—"}
                       </p>
                     </div>
