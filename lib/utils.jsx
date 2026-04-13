@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { LayoutDashboard, Building2, CreditCard, Wallet, TrendingUp, Target, Settings } from "lucide-react";
+import { LayoutDashboard, Building2, CreditCard, Wallet, Sparkles, TrendingUp, Target, Settings, Lock, Shield, Smartphone } from "lucide-react";
 
 
 export const QUICK_AMOUNTS = [100, 250, 500, 1000, 2500, 5000];
@@ -73,6 +73,63 @@ export const navItems = [
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
+export const FEATURE_CONFIG = {
+  "two-factor": {
+    icon: <Smartphone className="h-8 w-8 text-primary" />,
+    title: "Two-Factor Authentication",
+    description:
+      "Add an extra layer of security to your account with two-factor authentication. Protect your finances from unauthorized access.",
+    perks: [
+      "SMS & Authenticator app support",
+      "Login alerts & notifications",
+      "Trusted device management",
+    ],
+  },
+  "active-sessions": {
+    icon: <Shield className="h-8 w-8 text-primary" />,
+    title: "Active Sessions",
+    description:
+      "View and manage all devices currently logged into your account. Sign out remotely from anywhere.",
+    perks: [
+      "See all active devices",
+      "Remote sign-out",
+      "Session history & activity logs",
+    ],
+  },
+  "change-picture": {
+    icon: <Sparkles className="h-8 w-8 text-primary" />,
+    title: "Custom Profile Picture",
+    description:
+      "Upload a custom profile picture to personalize your account and stand out.",
+    perks: [
+      "Upload any image",
+      "Crop & resize tools",
+      "Instant profile update",
+    ],
+  },
+   "change-currency": {
+    icon: <Sparkles className="h-8 w-8 text-primary" />,
+    title: "Custom currency",
+    description:
+      "Change your money base to what?",
+    perks: [
+      "Change to prevared country currency",
+      "Auto detect country currency",
+    ],
+  },
+};
+
+export const DEFAULT_CONFIG = {
+  icon: <Lock className="h-8 w-8 text-primary" />,
+  title: "Premium Feature",
+  description:
+    "This feature is available for subscribed users only. Upgrade your plan to unlock it.",
+  perks: [
+    "Access all premium features",
+    "Priority support",
+    "Advanced analytics",
+  ],
+};
 
 export const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {

@@ -7,7 +7,6 @@ import Expense from "@/models/Expense";
 
 export async function POST(request) {
   try {
-    // Get token from cookies
     const token = request.cookies.get("token")?.value;
 
     if (!token){
@@ -17,16 +16,12 @@ export async function POST(request) {
       );
     }
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Connect to database
     await DBConnect();
 
-    // Get expense data from request
     const { title, amount, category, date, description, paymentMethod } = await request.json();
 
-    // Validate required fields
     if (!title || !amount || !category || !date) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -34,7 +29,6 @@ export async function POST(request) {
       );
     }
 
-    // Create new expense
     const expense = await Expense.create({
       userId: decoded.userId,
       title,
@@ -64,7 +58,6 @@ export async function POST(request) {
 
 export async function GET(request) {
   try {
-    // Get token
     const token = request.cookies.get("token")?.value;
 
     if (!token) {
@@ -74,15 +67,12 @@ export async function GET(request) {
       );
     }
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Connect to database
     await DBConnect();
 
-    // Get user's expenses
     const expenses = await Expense.find({ userId: decoded.userId })
-      .sort({ date: -1 }) // Most recent first
+      .sort({ date: -1 }) 
       .limit(100);
 
     return NextResponse.json({
