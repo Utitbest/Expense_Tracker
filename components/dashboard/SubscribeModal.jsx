@@ -33,7 +33,7 @@ export function SubscribeModal({ open, onOpenChange, feature }) {
           </p>
           {config.perks.map((perk, i) => (
             <div key={i} className="flex items-center gap-2 text-sm">
-              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                 <span className="text-primary text-xs">✓</span>
               </div>
               <span>{perk}</span>

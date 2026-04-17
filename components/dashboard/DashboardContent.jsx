@@ -294,7 +294,7 @@ export function DashboardContent() {
                         <ArrowDownLeft className="h-4 w-4" />
                       )}
                       {transaction.amount > 0 ? "+" : ""}
-                      {Math.abs(transaction.amount).toFixed(2)}
+                      {Number(Math.abs(transaction.amount).toFixed(2)).toLocaleString()}
                     </div>
                     <p className="text-sm text-muted-foreground">{transaction.category}</p>
                   </div>

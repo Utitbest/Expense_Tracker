@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui_kits/TextArea";
 import { Spinner } from "@/components/ui_kits/Spinner";
 import { useMonthlyRecord } from "@/hooks/useMonthlyRecord";
 import { PAYMENT_METHODS, QUICK_AMOUNTS} from "@/lib/utils"
-
+import { SubscribeModal } from "@/components/dashboard/SubscribeModal";
 
 export function AddDeposit({ open, onOpenChange, onSuccess }) {
   const { saveRecord, loading } = useMonthlyRecord();
@@ -117,7 +117,7 @@ export function AddDeposit({ open, onOpenChange, onSuccess }) {
                     }`}
                   >
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                       style={{ backgroundColor: method.color }}
                     >
                       <Icon className="h-5 w-5 text-white" />

@@ -74,7 +74,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/50 flex flex-col">
+    <div className="min-h-screen bg-linear-to-br from-background via-background to-muted/50 flex flex-col">
       <div className="p-4 flex justify-between items-center border-b border-border/50">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">

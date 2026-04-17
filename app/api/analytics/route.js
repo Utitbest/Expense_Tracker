@@ -1,7 +1,3 @@
-// app/api/analytics/route.js
-// GET /api/analytics?months=6
-// Returns: spendingTrend, categoryComparison, insights, stats
-
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
@@ -41,8 +37,7 @@ export async function GET(request) {
     const savedCategories = await Category.find({ userId: decoded.userId });
     const totalBudget = savedCategories.reduce((sum, c) => sum + c.budget, 0);
 
-    const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const spendingTrend = records.slice(-months).map((r) => ({
       month: MONTH_NAMES[r.month - 1],
@@ -113,7 +108,7 @@ export async function GET(request) {
       if (diff > 0) {
         insights.push({
           title: `Higher spending on ${name}`,
-          description: `You spent $${diff} more on ${name} compared to last month`,
+          description: `You spent $${diff.toLocaleString()} more on ${name} compared to last month`,
           trend: "up",
         });
       } else {

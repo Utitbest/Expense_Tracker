@@ -40,7 +40,6 @@ export function AnalyticsPage() {
   return (
     <div className="p-6 space-y-6">
 
-      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Analytics & Insights</h1>
@@ -63,7 +62,6 @@ export function AnalyticsPage() {
         </Select>
       </div>
 
-      {/* Stats Row */}
       <div className="grid md:grid-cols-4 gap-6">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
@@ -107,7 +105,6 @@ export function AnalyticsPage() {
         )}
       </div>
 
-      {/* Insights Cards */}
       {loading ? (
         <div className="grid md:grid-cols-2 gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -152,7 +149,6 @@ export function AnalyticsPage() {
         </Card>
       )}
 
-      {/* Spending Trend Chart */}
       <Card>
         <CardHeader>
           <CardTitle>Spending Trend</CardTitle>

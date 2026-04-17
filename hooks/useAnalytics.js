@@ -8,9 +8,6 @@ export const useAnalytics = () => {
   const [error, setError] = useState(null);
   const [analytics, setAnalytics] = useState(null);
 
-  // ── GET: Fetch all analytics data ─────────────────────────────────────────
-  // GET /api/analytics?months=6
-  // Returns: spendingTrend, categoryComparison, insights, stats
   const getAnalytics = async (months = 6) => {
     setLoading(true);
     setError(null);

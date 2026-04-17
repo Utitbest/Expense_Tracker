@@ -8,7 +8,7 @@ import { useCategory } from "@/hooks/useCategory";
 import { EditCategoryModal, DeleteCategoryModal } from "@/components/dashboard/AddCategoryModal";
 import { CATEGORY_ICONS, CATEGORY_COLORS, cn, PERIOD_FILTERS, STATUS_FILTERS } from "@/lib/utils";
 import { ViewBudgetDetails } from "@/components/dashboard/ViewBudgetDetails";
-
+import { SubscribeModal } from "@/components/dashboard/SubscribeModal";
 
 export function BudgetsPage() {
   const { getCategories, categories, loading, error } = useCategory();
@@ -20,6 +20,11 @@ export function BudgetsPage() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetCategory, setSheetCategory] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
+
+  const [subscribeModal, setSubscribeModal] = useState({ open: false, feature: "" });
+  const openSubscribeModal = (feature) => {
+    setSubscribeModal({ open: true, feature });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,7 +90,7 @@ export function BudgetsPage() {
         <Button className="gap-2" 
         onClick={() => { 
           setSelectedCategory(null)
-           setEditOpen(true)
+          openSubscribeModal()
           }}>
           <Plus className="h-4 w-4" />
           <span className="hidden sm:inline">New Budget</span>
@@ -148,7 +153,7 @@ export function BudgetsPage() {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm">{cat.name} budget at {pct}%</p>
                       <p className="text-xs text-muted-foreground">
-                        ${cat.spent.toFixed(2)} of ${cat.budget.toFixed(2)} spent
+                        ${Number(cat.spent.toFixed(2)).toLocaleString()} of ${Number(cat.budget.toFixed(2)).toLocaleString()} spent
                       </p>
                     </div>
                     <Button
@@ -227,7 +232,7 @@ export function BudgetsPage() {
       ) : filteredBudgets.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <p className="text-muted-foreground">Buy me a cup of coffee🥺</p>
-          <Button disabled={true} title="Buy me a coffe" className="gap-2">
+          <Button onClick={()=> openSubscribeModal()} title="Buy me a coffe" className="gap-2">
             <Plus className="h-4 w-4" /> Set a budget
           </Button>
         </div>
@@ -291,8 +296,8 @@ export function BudgetsPage() {
                   <div className="flex justify-between items-center">
                     <p className="text-xs text-muted-foreground">Spent</p>
                     <p className="text-sm font-semibold">
-                      ${cat.spent.toFixed(2)}{" "}
-                      <span className="text-muted-foreground font-normal">/ ${cat.budget.toFixed(2)}</span>
+                      ${Number(cat.spent.toFixed(2)).toLocaleString()}{" "}
+                      <span className="text-muted-foreground font-normal">/ ${Number(cat.budget.toFixed(2)).toLocaleString()}</span>
                     </p>
                   </div>
 
@@ -320,7 +325,7 @@ export function BudgetsPage() {
                       <p className="text-xs text-muted-foreground">
                         {remaining < 0
                           ? `Over by $${Math.abs(remaining).toFixed(2)}`
-                          : `Remaining $${remaining.toFixed(2)}`}
+                          : `Remaining $${Number(remaining.toFixed(2)).toLocaleString()}`}
                       </p>
                     </div>
                   </div>
@@ -363,7 +368,11 @@ export function BudgetsPage() {
         category={selectedCategory}
         onSuccess={() => getCategories()}
       />
-
+      <SubscribeModal
+        open={subscribeModal.open}
+        onOpenChange={(val) => setSubscribeModal({ ...subscribeModal, open: val })}
+        feature={subscribeModal.feature}
+      /> 
     </div>
   );
 }

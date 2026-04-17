@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui_kits/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui_kits/Card";
 import { Plus, Shield, Trash2, CheckCircle2 } from "lucide-react";
+import { SubscribeModal } from "@/components/dashboard/SubscribeModal";
 
 const linkedCards = [
   {
@@ -34,7 +35,10 @@ const linkedCards = [
 export function BankLinkingSection() {
   const [cards, setCards] = useState(linkedCards);
   const [showLinkingFlow, setShowLinkingFlow] = useState(false);
-
+  const [subscribeModal, setSubscribeModal] = useState({ open: false, feature: "" });
+  const openSubscribeModal = (feature) => {
+    setSubscribeModal({ open: true, feature });
+  };
   return (
     <Card>
       <CardHeader>
@@ -88,7 +92,7 @@ export function BankLinkingSection() {
           </div>
         ) : (
           <>
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               {cards.map((card) => (
                 <div
                   key={card.id}
@@ -129,10 +133,13 @@ export function BankLinkingSection() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <Button
-              onClick={() => setShowLinkingFlow(true)}
+              onClick={() => {
+                // setShowLinkingFlow(true)
+                openSubscribeModal()
+              }}
               variant="outline"
               className="w-full gap-2 bg-transparent"
             >
@@ -152,6 +159,11 @@ export function BankLinkingSection() {
           </div>
         )}
       </CardContent>
+      <SubscribeModal
+        open={subscribeModal.open}
+        onOpenChange={(val) => setSubscribeModal({ ...subscribeModal, open: val })}
+        feature={subscribeModal.feature}
+      /> 
     </Card>
   );
 }

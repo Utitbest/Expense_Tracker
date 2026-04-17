@@ -188,7 +188,7 @@ export function SettingsPage() {
           </div>
           <div>
             <Label htmlFor="currency">Currency</Label>
-            <Select value={currency} onValueChange={setCurrency}>
+            <Select value={currency} onValueChange={() => openSubscribeModal("currency")}>
               <SelectTrigger className="mt-2">
                 <SelectValue />
               </SelectTrigger>

@@ -53,20 +53,20 @@ export function ViewBudgetDetails({
             {[
               {
                 label: "Budget",
-                value: `$${category.budget?.toFixed(2)}`,
+                value: `$${Number(category.budget?.toFixed(2)).toLocaleString()}`,
                 color: "text-foreground",
               },
               {
                 label: "Spent",
-                value: `$${category.spent?.toFixed(2)}`,
+                value: `$${Number(category.spent?.toFixed(2)).toLocaleString()}`,
                 color: "text-destructive",
               },
               {
                 label: "Left",
-                value: `$${Math.max(
+                value: `$${Number(Math.max(
                   0,
                   category.budget - category.spent
-                ).toFixed(2)}`,
+                ).toFixed(2)).toLocaleString()}`,
                 color: "text-accent",
               },
             ].map((s) => (

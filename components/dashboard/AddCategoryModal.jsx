@@ -65,7 +65,7 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }) {
           <div>
             <p className="font-medium">{category?.name}</p>
             <p className="text-xs text-muted-foreground">
-              ${category?.spent?.toFixed(2)} spent so far
+              ${Number(category?.spent?.toFixed(2)).toLocaleString()} spent so far
             </p>
           </div>
         </div>
