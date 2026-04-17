@@ -240,7 +240,7 @@ export function SettingsPage() {
           <CardTitle className="text-destructive">Danger Zone</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button variant="outline" className="w-full justify-between bg-transparent">
+          <Button onClick={()=> openSubscribeModal()} variant="outline" className="w-full justify-between bg-transparent">
             <span>Sign Out All Devices</span>
             <ChevronRight className="h-5 w-5" />
           </Button>
